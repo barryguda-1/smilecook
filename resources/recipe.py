@@ -1,10 +1,10 @@
-from flask import request
+from flask import request, jsonify
 
 from flask_restful import Resource
 
 from http import HTTPStatus
 
-from models.recipe import Recipe,recipe_list
+from models.recipe import Recipe, recipe_list
 
 
 class RecipeListResource(Resource):
@@ -15,7 +15,7 @@ class RecipeListResource(Resource):
 
         for recipe in recipe_list:
 
-            if recipe.is_publish is True:
+            if recipe.is_publish:
 
                 data.append(recipe.data)
 
@@ -74,6 +74,18 @@ class RecipeResource(Resource):
 
         return recipe.data, HTTPStatus.OK
 
+    def delete(self, recipe_id):
+
+        recipe = next((recipe for recipe in recipe_list if recipe.id == recipe_id), None)
+
+        if recipe is None:
+
+            return {'message': 'recipe not found'}, HTTPStatus.NOT_FOUND
+
+        recipe.is_publish = False
+
+        return recipe.data, HTTPStatus.OK
+
 
 class RecipePublishResource(Resource):
 
@@ -85,7 +97,7 @@ class RecipePublishResource(Resource):
 
             return {'message': 'Recipe not found'}, HTTPStatus.NOT_FOUND
 
-        recipe.is_published = True
+        recipe.is_publish = True
 
         return {}, HTTPStatus.NO_CONTENT
 
