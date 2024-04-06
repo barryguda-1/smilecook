@@ -16,7 +16,7 @@ from resources.recipe import RecipeResource, RecipeListResource, RecipePublishRe
 def create_app():
 
     app = Flask(__name__)
-
+    app.app_context().push()
     app.config.from_object(Config)
 
     register_extensions(app)
