@@ -4,7 +4,7 @@ from flask_restful import Api
 
 from config import Config
 
-from extensions import db
+from extensions import db, jwt
 
 from models.user import User
 
@@ -12,7 +12,9 @@ from flask_migrate import Migrate
 
 from resources.recipe import RecipeResource, RecipeListResource, RecipePublishResource
 
-from resources.user import UserListResource
+from resources.user import UserListResource, UserResource
+
+from resources.token import TokenResource
 
 
 def create_app():
@@ -34,6 +36,8 @@ def register_extensions(app):
 
     migrate = Migrate(app, db)
 
+    jwt.init_app(app)
+
 
 def register_resources(app):
 
@@ -46,6 +50,12 @@ def register_resources(app):
     api.add_resource(RecipePublishResource, '/recipes/<int:recipe_id>/publish')
 
     api.add_resource(UserListResource, '/users')
+
+    api.add_resource(UserResource, '/users/<string:username>')
+
+    api.add_resource(TokenResource, '/token')
+
+
 
 
 if __name__ == '__main__':
